@@ -22,6 +22,8 @@ env:
   CUSTOM_IMAGE_NAME: gpack-custom
   CUSTOM_DOCKER_FILE: docker/custom/Dockerfile
   RELEASE_VERSION: 0.0.1
+  TEST_VERSION: test.${{ github.run_number}}
+  RESISTRY_URL: ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}
 
 jobs:
   # Build and Push add Test Tag
@@ -48,7 +50,7 @@ jobs:
           context: .
           file: ${{ env.BASE_DOCKER_FILE }}
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:test.${{ github.run_number }}
+          tags: ${{ env.RESISTRY_URL }}:${{ env.TEST_VERSION }}
 
   # Run Tests.
   base-test:
@@ -65,10 +67,11 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PASSWD }}
 
-      - name: Base Image Build and Tests
+      - name: Base Image Tests
         run: |
             # test base image
-            docker run ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:test.${{ github.run_number}} echo "TEST ECHO: test base docker image"
+            docker run --rm ${{ env.RESISTRY_URL }}:${{ env.TEST_VERSION }} \
+                echo "TEST ECHO: test base docker image"
 
   # Push custom image to GitHub Packages.
   #  custom-push:
