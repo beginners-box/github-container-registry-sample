@@ -48,8 +48,7 @@ jobs:
           context: .
           file: ${{ env.BASE_DOCKER_FILE }}
           push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:test.${{ env_GITHUB_RUN_ID }}
+          tags: ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:test.${{ env.GITHUB_RUN_ID }}
 
   # Build & Run tests.
   base-test:
