@@ -24,26 +24,8 @@ env:
   RELEASE_VERSION: 0.0.1
 
 jobs:
-  # Build & Run tests.
-  # base-build-test:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - uses: actions/checkout@v2
-
-  #     - name: Base Image Build and Tests
-  #       run: |
-  #           # build base image
-  #           docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
-
-  #           # test base image
-  #           docker run $BASE_IMAGE_NAME echo "TEST ECHO: test base docker image"
-
-  # Push base image to GitHub Packages.
-  base-push:
-    # Ensure test job passes before pushing image.
-    # needs: base-build-test
-
+  # Build and Push add Test Tag
+  build-and-push-for-test:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
@@ -58,7 +40,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
+          password: ${{ secrets.GHCR_PASSWD }}
 
       - name: Build and push
         uses: docker/build-push-action@v2
@@ -67,37 +49,49 @@ jobs:
           file: ${{ env.BASE_DOCKER_FILE }}
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:latest
-            ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+            ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:test.${{ env_GITHUB_RUN_ID }}
 
-  # Push custom image to GitHub Packages.
-  custom-push:
-    # Ensure test job passes before pushing image.
-    needs: base-push
-
+  # Build & Run tests.
+  base-test:
+    needs: build-and-push-for-test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Base Image Build and Tests
+        run: |
+            # test base image
+            docker run ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:test.${{ env_GITHUB_RUN_ID }} echo "TEST ECHO: test base docker image"
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ${{ env.CUSTOM_DOCKER_FILE }}
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.CUSTOM_IMAGE_NAME }}:latest
-            ghcr.io/${{ github.repository_owner }}/${{ env.CUSTOM_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+  # Push custom image to GitHub Packages.
+  #  custom-push:
+  #    # Ensure test job passes before pushing image.
+  #    needs: base-push
+  #
+  #    runs-on: ubuntu-latest
+  #    if: github.event_name == 'push'
+  #
+  #    steps:
+  #      - uses: actions/checkout@v2
+  #
+  #      - name: Set up Docker Buildx
+  #        uses: docker/setup-buildx-action@v1
+  #
+  #      - name: Login to GitHub Container Registry
+  #        uses: docker/login-action@v1
+  #        with:
+  #          registry: ghcr.io
+  #          username: ${{ github.repository_owner }}
+  #          password: ${{ secrets.CR_PAT }}
+  #
+  #      - name: Build and push
+  #        uses: docker/build-push-action@v2
+  #        with:
+  #          context: .
+  #          file: ${{ env.CUSTOM_DOCKER_FILE }}
+  #          push: true
+  #          tags: |
+  #            ghcr.io/${{ github.repository_owner }}/${{ env.CUSTOM_IMAGE_NAME }}:latest
+  #            ghcr.io/${{ github.repository_owner }}/${{ env.CUSTOM_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
