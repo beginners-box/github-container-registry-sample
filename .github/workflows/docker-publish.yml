@@ -61,7 +61,7 @@ jobs:
       - name: Base Image Build and Tests
         run: |
             # test base image
-            docker run ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:test.${{ env_GITHUB_RUN_ID }} echo "TEST ECHO: test base docker image"
+            docker run ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:test.${{ env.GITHUB_RUN_ID }} echo "TEST ECHO: test base docker image"
 
   # Push custom image to GitHub Packages.
   #  custom-push:
