@@ -19,7 +19,7 @@ env:
   DOCKER_BUILDKIT: 1
   RESISTRY_URL: ghcr.io/${{ github.repository_owner }}
   IMAGE_NAME: gpack-base
-  DOCKER_FILE: docker/base/Dockerfile
+  DOCKER_FILE: base/Dockerfile
   RELEASE_VERSION: 0.0.1
   TEST_VERSION: test.${{ github.run_number }}
 
