@@ -39,7 +39,7 @@ jobs:
       - name: Test Docker Image
         id: image-test
         run: |
-          docker run ${{ env.IMAGE_NAME }} tail -f /dev/null && docker exec -t ${{ env.IMAGE_NAME }} env
+          docker run -d ${{ env.IMAGE_NAME }} tail -f /dev/null && docker exec -t ${{ env.IMAGE_NAME }} env
 
       - name: Login to ghrc.io
         uses: docker/login-action@v1
