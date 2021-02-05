@@ -5,7 +5,7 @@ on:
   # 指定ブランチで指定ファイルがPUSHされたときに実行する
   push:
     branches:
-      - auto-build
+      - auto_build
       - master
 
     paths:
