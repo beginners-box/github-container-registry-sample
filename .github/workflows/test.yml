@@ -10,7 +10,7 @@ on:
 
     paths:
       - 'docker/**'
-      - '.github/workflows/build-test2.yml'
+      - '.github/workflows/test.yml'
 
 # 環境変数の設定
 env:
