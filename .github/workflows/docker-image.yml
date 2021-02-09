@@ -14,7 +14,7 @@ env:
   RESISTRY_URL: ghcr.io/${{ github.repository_owner }}
   IMAGE_NAME: base-kit
   DOCKER_ROOT_DIR: ./docker
-  DOCKER_FILE: ./base/Dockerfile
+  DOCKER_FILE: ./docker/base/Dockerfile
   TEST_VERSION: test.${{ github.run_number }}
   RELEASE_VERSION: 4.1.1
 
