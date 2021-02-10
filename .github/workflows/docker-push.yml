@@ -6,7 +6,7 @@ on:
   push:
     paths:
       - 'docker/**'
-      - '.github/workflows/docker-image.yml'
+      - '.github/workflows/docker-push.yml'
 
 # 環境変数の設定
 env:
